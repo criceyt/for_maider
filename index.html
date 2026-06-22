@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para ti · Zurekin batera</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --paper: #FDFAF8;
+            --paper2: #F7F2EE;
+            --ink: #2A2420;
+            --ink-soft: #7A6E68;
+            --gold: #C4A882;
+            --gold-light: #EFE3D4;
+            --rose: #E8D5CC;
+            --seal: #C4A882;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background: var(--paper);
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-x: hidden;
+        }
+
+        /* ── FONDO TEXTURA FINA ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 15% 25%, rgba(196,168,130,0.06) 0%, transparent 60%),
+                radial-gradient(circle at 85% 75%, rgba(232,213,204,0.10) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── PÉTALOS ── */
+        #petal-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ── CONTENEDOR ── */
+        .stage {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 440px;
+            min-height: 100vh;
+            padding: 0 24px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        /* ══ PANTALLA 1: ENTRADA ══ */
+        #screen-intro {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            transition: opacity 0.9s ease, transform 0.9s ease;
+        }
+
+        .monogram {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.2rem;
+            font-weight: 300;
+            font-style: italic;
+            color: var(--gold);
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fadeUp 1.2s ease 0.3s forwards;
+        }
+
+        .intro-rule {
+            width: 48px;
+            height: 1px;
+            background: var(--gold);
+            margin: 0 auto 28px;
+            opacity: 0;
+            animation: fadeUp 1.2s ease 0.6s forwards;
+        }
+
+        .intro-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.6rem;
+            font-weight: 300;
+            color: var(--ink);
+            text-align: center;
+            line-height: 1.25;
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: fadeUp 1.2s ease 0.8s forwards;
+        }
+
+        .intro-sub {
+            font-size: 0.82rem;
+            font-weight: 300;
+            color: var(--ink-soft);
+            text-align: center;
+            line-height: 1.8;
+            max-width: 280px;
+            margin: 0 auto 44px;
+            opacity: 0;
+            animation: fadeUp 1.2s ease 1.0s forwards;
+        }
+
+        .btn-open {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.70rem;
+            font-weight: 500;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            padding: 14px 34px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s, transform 0.2s;
+            opacity: 0;
+            animation: fadeUp 1.2s ease 1.2s forwards;
+        }
+
+        .btn-open:hover { background: var(--gold-light); }
+        .btn-open:active { transform: scale(0.96); }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ══ PANTALLA 2: CARTA ══ */
+        #screen-letter {
+            display: none;
+            width: 100%;
+            padding-top: 60px;
+            opacity: 0;
+            transition: opacity 0.9s ease;
+        }
+
+        /* Reproductor minimalista */
+        .audio-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 16px;
+            border: 1px solid var(--rose);
+            border-radius: 60px;
+            margin-bottom: 40px;
+            width: fit-content;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .audio-pill:hover { background: var(--gold-light); }
+
+        .audio-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
+            animation: pulse 1.6s ease-in-out infinite;
+        }
+
+        .audio-dot.paused { animation: none; background: var(--ink-soft); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.7); }
+        }
+
+        .audio-label {
+            font-size: 0.72rem;
+            font-weight: 400;
+            color: var(--ink-soft);
+            letter-spacing: 0.5px;
+        }
+
+        .audio-toggle {
+            font-size: 0.70rem;
+            font-weight: 500;
+            color: var(--ink);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 2px;
+        }
+
+        /* Papel de carta */
+        .letter-paper {
+            background: #FFFFFF;
+            border: 1px solid rgba(196,168,130,0.25);
+            border-radius: 3px;
+            padding: 44px 36px 40px;
+            box-shadow:
+                0 1px 2px rgba(0,0,0,0.04),
+                0 8px 24px rgba(0,0,0,0.04),
+                inset 0 0 0 1px rgba(255,255,255,0.8);
+            position: relative;
+            margin-bottom: 32px;
+        }
+
+        /* Línea marginal izquierda (detalle de papel carta real) */
+        .letter-paper::before {
+            content: '';
+            position: absolute;
+            left: 60px;
+            top: 20px;
+            bottom: 20px;
+            width: 1px;
+            background: rgba(232,213,204,0.5);
+        }
+
+        /* Fecha elegante */
+        .letter-date {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.82rem;
+            font-style: italic;
+            color: var(--ink-soft);
+            text-align: right;
+            margin-bottom: 28px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Saludo */
+        .letter-salute {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.55rem;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--ink);
+            margin-bottom: 22px;
+            line-height: 1.3;
+        }
+
+        /* Cuerpo de la carta — efecto escritura a máquina */
+        .letter-body {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.08rem;
+            font-weight: 300;
+            color: #3A3330;
+            line-height: 1.9;
+            min-height: 120px;
+        }
+
+        .letter-body .cursor {
+            display: inline-block;
+            width: 1.5px;
+            height: 1.1em;
+            background: var(--gold);
+            vertical-align: text-bottom;
+            margin-left: 1px;
+            animation: blink 0.9s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Firma */
+        .letter-sign {
+            margin-top: 32px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            font-style: italic;
+            color: var(--ink-soft);
+            text-align: right;
+            opacity: 0;
+            transition: opacity 1s ease 0.3s;
+        }
+
+        .letter-sign.visible { opacity: 1; }
+
+        /* ══ ZONA DE CALMA ══ */
+        .calm-card {
+            width: 100%;
+            border-top: 1px solid var(--rose);
+            padding-top: 32px;
+            margin-bottom: 32px;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .calm-card.visible { opacity: 1; transform: translateY(0); }
+
+        .calm-eyebrow {
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 16px;
+        }
+
+        #calm-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15rem;
+            font-style: italic;
+            font-weight: 300;
+            color: var(--ink);
+            line-height: 1.75;
+            min-height: 60px;
+            margin-bottom: 20px;
+            transition: opacity 0.35s ease;
+        }
+
+        .btn-calm {
+            background: transparent;
+            border: 1px solid var(--rose);
+            color: var(--ink-soft);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.68rem;
+            font-weight: 400;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 11px 22px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: background 0.25s, border-color 0.25s;
+        }
+
+        .btn-calm:hover { background: var(--gold-light); border-color: var(--gold); }
+
+        /* ══ SELLO / ORNAMENTO ══ */
+        .ornament {
+            text-align: center;
+            margin-top: 16px;
+            opacity: 0;
+            transition: opacity 1.2s ease;
+        }
+
+        .ornament.visible { opacity: 1; }
+
+        .ornament svg { width: 48px; height: 48px; }
+    </style>
+</head>
+<body>
+
+<canvas id="petal-canvas"></canvas>
+
+<div class="stage">
+
+    <!-- PANTALLA 1 -->
+    <div id="screen-intro">
+        <div class="monogram">Z · B</div>
+        <div class="intro-rule"></div>
+        <h1 class="intro-title">Zurekin<br>batera</h1>
+        <p class="intro-sub">He preparado este pequeño espacio solo para ti.<br>Sin prisas. Solo tú.</p>
+        <button class="btn-open" onclick="startExperience()">Abrir carta</button>
+    </div>
+
+    <!-- PANTALLA 2 -->
+    <div id="screen-letter">
+
+        <div class="audio-pill" onclick="toggleAudio()" id="audio-pill">
+            <div class="audio-dot" id="audio-dot"></div>
+            <span class="audio-label">Zetak — Itzulera</span>
+            <button class="audio-toggle" id="audio-toggle">Pausar</button>
+        </div>
+
+        <div class="letter-paper">
+            <div class="letter-date" id="letter-date"></div>
+            <div class="letter-salute">Kaixo, Maitea —</div>
+            <div class="letter-body" id="letter-body"><span class="cursor"></span></div>
+            <div class="letter-sign" id="letter-sign">Con todo mi cariño ♡</div>
+        </div>
+
+        <div class="calm-card" id="calm-card">
+            <div class="calm-eyebrow">Un momento para ti</div>
+            <p id="calm-text">¿Tienes la mente acelerada ahora mismo? Pulsa el botón.</p>
+            <button class="btn-calm" onclick="changeCalmText()">Recordatorio de calma</button>
+        </div>
+
+        <div class="ornament" id="ornament">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="24" r="20" stroke="#C4A882" stroke-width="0.8"/>
+                <circle cx="24" cy="24" r="16" stroke="#C4A882" stroke-width="0.4" stroke-dasharray="2 3"/>
+                <path d="M24 16 C24 16 28 20 24 24 C20 20 24 16 24 16Z" fill="#C4A882" opacity="0.6"/>
+                <path d="M16 24 C16 24 20 20 24 24 C20 28 16 24 16 24Z" fill="#C4A882" opacity="0.4"/>
+                <path d="M32 24 C32 24 28 28 24 24 C28 20 32 24 32 24Z" fill="#C4A882" opacity="0.4"/>
+                <path d="M24 32 C24 32 20 28 24 24 C28 28 24 32 24 32Z" fill="#C4A882" opacity="0.6"/>
+                <circle cx="24" cy="24" r="2" fill="#C4A882"/>
+            </svg>
+        </div>
+
+    </div>
+
+</div>
+
+<audio id="bg-audio" src="zetak-itzulera.mp3" loop></audio>
+
+<script>
+    /* ─── FECHA ─── */
+    const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    const now = new Date();
+    document.getElementById('letter-date').textContent =
+        `${now.getDate()} de ${months[now.getMonth()]}, ${now.getFullYear()}`;
+
+    /* ─── AUDIO ─── */
+    const audio = document.getElementById('bg-audio');
+    const dot   = document.getElementById('audio-dot');
+    const btn   = document.getElementById('audio-toggle');
+    let   audioPlaying = false;
+
+    function toggleAudio() {
+        if (audio.paused) {
+            audio.play().then(() => {
+                audioPlaying = true;
+                dot.classList.remove('paused');
+                btn.textContent = 'Pausar';
+            }).catch(() => {});
+        } else {
+            audio.pause();
+            audioPlaying = false;
+            dot.classList.add('paused');
+            btn.textContent = 'Play';
+        }
+    }
+
+    /* ─── TRANSICIÓN INTRO → CARTA ─── */
+    function startExperience() {
+        const intro  = document.getElementById('screen-intro');
+        const letter = document.getElementById('screen-letter');
+
+        audio.play().then(() => {
+            audioPlaying = true;
+        }).catch(() => {});
+
+        intro.style.opacity = '0';
+        intro.style.transform = 'translateY(-10px)';
+
+        setTimeout(() => {
+            intro.style.display = 'none';
+            letter.style.display = 'block';
+            window.scrollTo(0, 0);
+            setTimeout(() => {
+                letter.style.opacity = '1';
+                setTimeout(typewriteLetter, 600);
+            }, 50);
+        }, 900);
+    }
+
+    /* ─── EFECTO ESCRITURA A MÁQUINA ─── */
+    const letterText = `Quería escribirte esto porque sé que últimamente la mente va muy deprisa y el ruido de dentro se hace grande.
+
+Pero mírate. Eres una persona increíble — con un corazón enorme, una sensibilidad preciosa y una luz que no siempre ves tú misma, aunque los demás sí la vemos.
+
+No tienes que poder con todo hoy. No tienes que ser perfecta, ni fuerte, ni tenerlo todo resuelto. Hoy solo tienes que ser tú, y eso ya es muchísimo.
+
+La ansiedad miente. Te dice que estás en peligro cuando estás a salvo. Respira hondo. Estás aquí, y eso es lo único que importa ahora.
+
+El mundo es mejor contigo en él. Eso lo sé con certeza.`;
+
+    function typewriteLetter() {
+        const el     = document.getElementById('letter-body');
+        const cursor = el.querySelector('.cursor');
+        const chars  = letterText.split('');
+        let   i      = 0;
+
+        const speeds = { ' ': 28, ',': 120, '.': 160, '\n': 200 };
+
+        function type() {
+            if (i >= chars.length) {
+                cursor.remove();
+                document.getElementById('letter-sign').classList.add('visible');
+                setTimeout(showCalm, 800);
+                return;
+            }
+            const ch = chars[i];
+            if (ch === '\n') {
+                el.insertBefore(document.createElement('br'), cursor);
+                if (chars[i+1] === '\n') {
+                    el.insertBefore(document.createElement('br'), cursor);
+                    i++;
+                }
+            } else {
+                const t = document.createTextNode(ch);
+                el.insertBefore(t, cursor);
+            }
+            i++;
+            const delay = speeds[ch] || (Math.random() < 0.05 ? 60 : 22);
+            setTimeout(type, delay);
+        }
+
+        type();
+    }
+
+    function showCalm() {
+        document.getElementById('calm-card').classList.add('visible');
+        setTimeout(() => {
+            document.getElementById('ornament').classList.add('visible');
+        }, 600);
+    }
+
+    /* ─── FRASES DE CALMA ─── */
+    const phrases = [
+        "Inhala contando hasta 4... sostén 4... exhala 4. Repite. Tu cuerpo sabe cómo calmarse.",
+        "La ansiedad es una ola. No tienes que detenerla, solo dejarla pasar. Ahora mismo estás a salvo.",
+        "No tienes que resolver tu vida entera hoy. Solo el siguiente minuto. Luego el siguiente.",
+        "Eres suficiente. No a pesar de cómo eres, sino exactamente así.",
+        "«Zurekin batera, dena da argiagoa» — contigo, todo es más luminoso.",
+        "Tus días difíciles no te definen. Tu corazón, sí. Y ese es enorme.",
+        "Pon una mano en el pecho. Siente tu propio calor. Estás aquí. Estás viva. Eso es suficiente."
+    ];
+
+    let lastPhrase = -1;
+
+    function changeCalmText() {
+        const el = document.getElementById('calm-text');
+        let idx;
+        do { idx = Math.floor(Math.random() * phrases.length); } while (idx === lastPhrase);
+        lastPhrase = idx;
+        el.style.opacity = '0';
+        setTimeout(() => {
+            el.textContent = phrases[idx];
+            el.style.opacity = '1';
+        }, 350);
+    }
+
+    /* ─── PÉTALOS ─── */
+    const canvas = document.getElementById('petal-canvas');
+    const ctx    = canvas.getContext('2d');
+
+    function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Petal {
+        constructor(immediate) {
+            this.reset(immediate);
+        }
+        reset(immediate) {
+            this.x     = Math.random() * canvas.width;
+            this.y     = immediate ? Math.random() * canvas.height : -20;
+            this.size  = Math.random() * 5 + 3;
+            this.speedY= Math.random() * 0.5 + 0.2;
+            this.speedX= (Math.random() - 0.5) * 0.4;
+            this.rot   = Math.random() * Math.PI * 2;
+            this.rotSpeed = (Math.random() - 0.5) * 0.015;
+            this.alpha = Math.random() * 0.25 + 0.08;
+            /* colores cálidos: rosa pálido, dorado, blanco */
+            const cols = ['232,213,204', '196,168,130', '255,248,244', '220,200,188'];
+            this.color = cols[Math.floor(Math.random() * cols.length)];
+        }
+        update() {
+            this.y   += this.speedY;
+            this.x   += this.speedX + Math.sin(this.y * 0.015) * 0.3;
+            this.rot += this.rotSpeed;
+            if (this.y > canvas.height + 20) this.reset(false);
+        }
+        draw() {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rot);
+            ctx.globalAlpha = this.alpha;
+            ctx.fillStyle = `rgba(${this.color},1)`;
+            /* pétalo forma oval simple */
+            ctx.beginPath();
+            ctx.ellipse(0, 0, this.size * 0.55, this.size, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    const petals = Array.from({ length: 22 }, () => new Petal(true));
+
+    function animatePetals() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        petals.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animatePetals);
+    }
+    animatePetals();
+</script>
+</body>
+</html>
