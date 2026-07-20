@@ -471,7 +471,7 @@ function startVideo() {
 
     setTimeout(() => {
         document.getElementById('call-ui').style.display = 'none';
-        video.muted = false;
+        video.muted = true;
         video.play().catch(() => {
             /* Si el autoplay con sonido falla, lo dejamos muted */
             video.muted = true;
