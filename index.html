@@ -3,590 +3,609 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Para ti · Zurekin batera</title>
+    <title>Buenos días ☀️</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&family=DM+Sans:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap" rel="stylesheet">
 
     <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
         :root {
-            --paper: #FDFAF8;
-            --paper2: #F7F2EE;
-            --ink: #2A2420;
-            --ink-soft: #7A6E68;
-            --gold: #C4A882;
-            --gold-light: #EFE3D4;
-            --rose: #E8D5CC;
-            --seal: #C4A882;
+            --black: #0A0A0A;
+            --white: #FDFAF7;
+            --gold: #C8A96E;
+            --gold-pale: #F5ECD9;
+            --ink: #1E1A16;
+            --muted: #8A7D6E;
+            --film-border: #F0E6D0;
+            --film-hole: #D4C4A8;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            background: var(--paper);
+        html, body {
+            height: 100%;
+            background: var(--black);
             font-family: 'DM Sans', sans-serif;
-            color: var(--ink);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            color: var(--white);
             overflow-x: hidden;
         }
 
-        /* ── FONDO TEXTURA FINA ── */
-        body::before {
-            content: '';
+        /* ══════════════════════════════
+           PANTALLA 1 — VIDEOLLAMADA
+        ══════════════════════════════ */
+        #screen-call {
             position: fixed;
             inset: 0;
-            background-image:
-                radial-gradient(circle at 15% 25%, rgba(196,168,130,0.06) 0%, transparent 60%),
-                radial-gradient(circle at 85% 75%, rgba(232,213,204,0.10) 0%, transparent 60%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* ── PÉTALOS ── */
-        #petal-canvas {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* ── CONTENEDOR ── */
-        .stage {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            max-width: 440px;
-            min-height: 100vh;
-            padding: 0 24px 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        /* ══ PANTALLA 1: ENTRADA ══ */
-        #screen-intro {
-            width: 100%;
-            min-height: 100vh;
+            z-index: 100;
+            background: var(--black);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 0;
-            transition: opacity 0.9s ease, transform 0.9s ease;
-        }
-
-        .monogram {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 3.2rem;
-            font-weight: 300;
-            font-style: italic;
-            color: var(--gold);
-            letter-spacing: 0.08em;
-            margin-bottom: 8px;
-            opacity: 0;
-            animation: fadeUp 1.2s ease 0.3s forwards;
-        }
-
-        .intro-rule {
-            width: 48px;
-            height: 1px;
-            background: var(--gold);
-            margin: 0 auto 28px;
-            opacity: 0;
-            animation: fadeUp 1.2s ease 0.6s forwards;
-        }
-
-        .intro-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2.6rem;
-            font-weight: 300;
-            color: var(--ink);
-            text-align: center;
-            line-height: 1.25;
-            margin-bottom: 16px;
-            opacity: 0;
-            animation: fadeUp 1.2s ease 0.8s forwards;
-        }
-
-        .intro-sub {
-            font-size: 0.82rem;
-            font-weight: 300;
-            color: var(--ink-soft);
-            text-align: center;
-            line-height: 1.8;
-            max-width: 280px;
-            margin: 0 auto 44px;
-            opacity: 0;
-            animation: fadeUp 1.2s ease 1.0s forwards;
-        }
-
-        .btn-open {
-            background: transparent;
-            border: 1px solid var(--gold);
-            color: var(--ink);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.70rem;
-            font-weight: 500;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            padding: 14px 34px;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: background 0.3s, color 0.3s, transform 0.2s;
-            opacity: 0;
-            animation: fadeUp 1.2s ease 1.2s forwards;
-        }
-
-        .btn-open:hover { background: var(--gold-light); }
-        .btn-open:active { transform: scale(0.96); }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(14px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ══ PANTALLA 2: CARTA ══ */
-        #screen-letter {
-            display: none;
-            width: 100%;
-            padding-top: 60px;
-            opacity: 0;
-            transition: opacity 0.9s ease;
-        }
-
-        /* Reproductor minimalista */
-        .audio-pill {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 9px 16px;
-            border: 1px solid var(--rose);
-            border-radius: 60px;
-            margin-bottom: 40px;
-            width: fit-content;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .audio-pill:hover { background: var(--gold-light); }
-
-        .audio-dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            background: var(--gold);
-            animation: pulse 1.6s ease-in-out infinite;
-        }
-
-        .audio-dot.paused { animation: none; background: var(--ink-soft); }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.7); }
-        }
-
-        .audio-label {
-            font-size: 0.72rem;
-            font-weight: 400;
-            color: var(--ink-soft);
-            letter-spacing: 0.5px;
-        }
-
-        .audio-toggle {
-            font-size: 0.70rem;
-            font-weight: 500;
-            color: var(--ink);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            margin-left: 2px;
-        }
-
-        /* Papel de carta */
-        .letter-paper {
-            background: #FFFFFF;
-            border: 1px solid rgba(196,168,130,0.25);
-            border-radius: 3px;
-            padding: 44px 36px 40px;
-            box-shadow:
-                0 1px 2px rgba(0,0,0,0.04),
-                0 8px 24px rgba(0,0,0,0.04),
-                inset 0 0 0 1px rgba(255,255,255,0.8);
-            position: relative;
-            margin-bottom: 32px;
-        }
-
-
-        /* Fecha elegante */
-        .letter-date {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 0.82rem;
-            font-style: italic;
-            color: var(--ink-soft);
-            text-align: right;
-            margin-bottom: 28px;
-            letter-spacing: 0.5px;
-        }
-
-        /* Saludo */
-        .letter-salute {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.55rem;
-            font-weight: 400;
-            font-style: italic;
-            color: var(--ink);
-            margin-bottom: 22px;
-            line-height: 1.3;
-        }
-
-        /* Cuerpo de la carta — efecto escritura a máquina */
-        .letter-body {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.08rem;
-            font-weight: 300;
-            color: #3A3330;
-            line-height: 1.9;
-            min-height: 120px;
-        }
-
-        .letter-body .cursor {
-            display: inline-block;
-            width: 1.5px;
-            height: 1.1em;
-            background: var(--gold);
-            vertical-align: text-bottom;
-            margin-left: 1px;
-            animation: blink 0.9s step-end infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        /* Firma */
-        .letter-sign {
-            margin-top: 32px;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.05rem;
-            font-style: italic;
-            color: var(--ink-soft);
-            text-align: right;
-            opacity: 0;
-            transition: opacity 1s ease 0.3s;
-        }
-
-        .letter-sign.visible { opacity: 1; }
-
-        /* ══ ZONA DE CALMA ══ */
-        .calm-card {
-            width: 100%;
-            border-top: 1px solid var(--rose);
-            padding-top: 32px;
-            margin-bottom: 32px;
-            opacity: 0;
-            transform: translateY(12px);
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
 
-        .calm-card.visible { opacity: 1; transform: translateY(0); }
-
-        .calm-eyebrow {
-            font-size: 0.65rem;
-            font-weight: 500;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            color: var(--gold);
-            margin-bottom: 16px;
+        #screen-call.hide {
+            opacity: 0;
+            transform: scale(1.04);
+            pointer-events: none;
         }
 
-        #calm-text {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.15rem;
-            font-style: italic;
-            font-weight: 300;
-            color: var(--ink);
-            line-height: 1.75;
-            min-height: 60px;
-            margin-bottom: 20px;
-            transition: opacity 0.35s ease;
-        }
-
-        .btn-calm {
-            background: transparent;
-            border: 1px solid var(--rose);
-            color: var(--ink-soft);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.68rem;
-            font-weight: 400;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            padding: 11px 22px;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: background 0.25s, border-color 0.25s;
-        }
-
-        .btn-calm:hover { background: var(--gold-light); border-color: var(--gold); }
-
-        /* ══ SELLO / ORNAMENTO ══ */
-        .ornament {
-            text-align: center;
-            margin-top: 16px;
+        /* Vídeo a pantalla completa */
+        #hero-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: var(--black);
             opacity: 0;
             transition: opacity 1.2s ease;
         }
 
-        .ornament.visible { opacity: 1; }
+        #hero-video.visible { opacity: 1; }
 
-        .ornament svg { width: 48px; height: 48px; }
+        /* Overlay oscuro sobre el vídeo */
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(0,0,0,0.15) 0%,
+                rgba(0,0,0,0.0) 40%,
+                rgba(0,0,0,0.55) 100%
+            );
+            z-index: 2;
+        }
+
+        /* Estado inicial: pantalla de "llamada entrante" antes de que arranque el vídeo */
+        #call-ui {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            text-align: center;
+            padding: 0 32px;
+        }
+
+        .call-avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            background: rgba(200,169,110,0.15);
+            border: 1.5px solid rgba(200,169,110,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            animation: callPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes callPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(200,169,110,0.3); }
+            50%       { box-shadow: 0 0 0 18px rgba(200,169,110,0); }
+        }
+
+        .call-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 6px;
+        }
+
+        .call-status {
+            font-size: 0.75rem;
+            font-weight: 300;
+            letter-spacing: 1.5px;
+            color: rgba(255,255,255,0.45);
+            text-transform: uppercase;
+            margin-bottom: 48px;
+        }
+
+        .call-status span {
+            animation: dotPulse 1.4s ease-in-out infinite;
+        }
+        .call-status span:nth-child(2) { animation-delay: 0.2s; }
+        .call-status span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 0.3; }
+            50%       { opacity: 1; }
+        }
+
+        .btn-play-call {
+            background: var(--gold);
+            border: none;
+            color: var(--black);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 14px 32px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .btn-play-call:active { transform: scale(0.95); }
+
+        /* Botón saltar que aparece cuando el vídeo está corriendo */
+        #btn-skip {
+            position: absolute;
+            bottom: 44px;
+            right: 28px;
+            z-index: 20;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: rgba(255,255,255,0.8);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.70rem;
+            font-weight: 400;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 10px 20px;
+            border-radius: 60px;
+            cursor: pointer;
+            display: none;
+            backdrop-filter: blur(8px);
+            transition: background 0.2s;
+        }
+
+        #btn-skip:hover { background: rgba(255,255,255,0.2); }
+
+        /* ══════════════════════════════
+           PANTALLA 2 — GALERÍA
+        ══════════════════════════════ */
+        #screen-gallery {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.9s ease;
+            background: var(--white);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        #screen-gallery.visible {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Header buenos días */
+        .gallery-header {
+            background: var(--white);
+            padding: 56px 28px 32px;
+            text-align: center;
+            position: relative;
+        }
+
+        .buenos-dias-label {
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .buenos-dias-title {
+            font-family: 'Caveat', cursive;
+            font-size: 3.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.1;
+            margin-bottom: 14px;
+        }
+
+        .buenos-dias-sub {
+            font-size: 0.85rem;
+            font-weight: 300;
+            color: var(--muted);
+            line-height: 1.7;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+
+        .header-rule {
+            width: 40px;
+            height: 1px;
+            background: var(--gold);
+            margin: 24px auto 0;
+            opacity: 0.6;
+        }
+
+        /* ── TIRA DE PELÍCULA ── */
+        .film-strip-container {
+            padding: 20px 0 0;
+            overflow: hidden;
+        }
+
+        /* Cada "frame" de película */
+        .film-frame {
+            position: relative;
+            margin: 0 auto 48px;
+            width: calc(100% - 80px);
+            max-width: 260px;
+            opacity: 0;
+            transform: translateY(40px) rotate(var(--tilt, 0deg));
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .film-frame.revealed {
+            opacity: 1;
+            transform: translateY(0) rotate(var(--tilt, 0deg));
+        }
+
+        /* Perforaciones de película arriba y abajo */
+        .film-perfs {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 8px;
+            margin-bottom: 4px;
+        }
+
+        .film-perfs.bottom { margin-top: 4px; margin-bottom: 0; }
+
+        .perf {
+            width: 14px;
+            height: 10px;
+            border-radius: 2px;
+            background: var(--film-hole);
+            opacity: 0.7;
+        }
+
+        /* El polaroid en sí */
+        .polaroid {
+            background: var(--film-border);
+            padding: 10px 10px 36px;
+            border-radius: 3px;
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06),
+                0 12px 28px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .polaroid-photo {
+            width: 100%;
+            aspect-ratio: 3/4;
+            object-fit: cover;
+            display: block;
+            border-radius: 1px;
+            filter: saturate(0.92) contrast(1.03);
+            background: #D4C4A8; /* placeholder color */
+        }
+
+        /* Placeholder cuando no hay foto real */
+        .photo-placeholder {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: linear-gradient(135deg, #E8DFD0 0%, #D4C4A8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1px;
+            font-size: 2.5rem;
+            opacity: 0.6;
+        }
+
+        .polaroid-caption {
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--ink);
+            text-align: center;
+            padding-top: 10px;
+            line-height: 1.3;
+        }
+
+        /* Número de foto (estilo negativo de carrete) */
+        .frame-number {
+            position: absolute;
+            top: -22px;
+            right: 12px;
+            font-size: 0.60rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            font-family: 'DM Sans', monospace;
+            opacity: 0.5;
+        }
+
+        /* ── MENSAJE FINAL ── */
+        .final-message {
+            text-align: center;
+            padding: 16px 36px 0;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.9s ease, transform 0.9s ease;
+        }
+
+        .final-message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .final-rule {
+            width: 32px;
+            height: 1px;
+            background: var(--gold);
+            margin: 0 auto 28px;
+            opacity: 0.5;
+        }
+
+        .final-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.25rem;
+            font-weight: 300;
+            color: var(--ink);
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .final-sign {
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            color: var(--gold);
+            font-weight: 500;
+        }
+
+        /* ── BOTÓN VOLVER A VER ── */
+        .btn-replay {
+            display: block;
+            margin: 36px auto 0;
+            background: transparent;
+            border: 1px solid rgba(200,169,110,0.4);
+            color: var(--muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.68rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 12px 26px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .btn-replay:hover { border-color: var(--gold); color: var(--ink); }
     </style>
 </head>
 <body>
 
-<canvas id="petal-canvas"></canvas>
+<!-- ══ PANTALLA 1: VIDEOLLAMADA ══ -->
+<div id="screen-call">
+    <video id="hero-video" src="video.mp4" playsinline webkit-playsinline muted></video>
+    <div class="video-overlay"></div>
 
-<div class="stage">
-
-    <!-- PANTALLA 1 -->
-    <div id="screen-intro">
-        <div class="monogram">Z · B</div>
-        <div class="intro-rule"></div>
-        <h1 class="intro-title">Zurekin<br>batera</h1>
-        <p class="intro-sub">He preparado este pequeño espacio solo para ti.<br>Sin prisas. Solo tú.</p>
-        <button class="btn-open" onclick="startExperience()">Abrir carta</button>
+    <div id="call-ui">
+        <div class="call-avatar">☀️</div>
+        <div class="call-name">Buenos días, bonita</div>
+        <div class="call-status">
+            <span>•</span><span>•</span><span>•</span>
+            &nbsp;tengo algo para ti
+        </div>
+        <button class="btn-play-call" onclick="startVideo()">Ver tu sorpresa</button>
     </div>
 
-    <!-- PANTALLA 2 -->
-    <div id="screen-letter">
+    <button id="btn-skip" onclick="goToGallery()">Saltar →</button>
+</div>
 
-        <div class="audio-pill" onclick="toggleAudio()" id="audio-pill">
-            <div class="audio-dot" id="audio-dot"></div>
-            <span class="audio-label">Zetak — Itzulera</span>
-            <button class="audio-toggle" id="audio-toggle">Pausar</button>
-        </div>
+<!-- ══ PANTALLA 2: GALERÍA ══ -->
+<div id="screen-gallery">
 
-        <div class="letter-paper">
-            <div class="letter-date" id="letter-date"></div>
-            <div class="letter-salute">Kaixo, Maitea —</div>
-            <div class="letter-body" id="letter-body"><span class="cursor"></span></div>
-            <div class="letter-sign" id="letter-sign">Con todo mi cariño ♡</div>
-        </div>
+    <div class="gallery-header">
+        <div class="buenos-dias-label">Para ti, hoy</div>
+        <h1 class="buenos-dias-title">Buenos días,<br>pequeña ❤️</h1>
+        <p class="buenos-dias-sub">Cada foto es un momento que me alegra el día. Espero que a ti también.</p>
+        <div class="header-rule"></div>
+    </div>
 
-        <div class="calm-card" id="calm-card">
-            <div class="calm-eyebrow">Un momento para ti</div>
-            <p id="calm-text">¿Tienes la mente acelerada ahora mismo? Pulsa el botón.</p>
-            <button class="btn-calm" onclick="changeCalmText()">Recordatorio de calma</button>
-        </div>
+    <div class="film-strip-container" id="film-strip">
+        <!-- Las fotos se generan por JS — edita el array PHOTOS abajo -->
+    </div>
 
-        <div class="ornament" id="ornament">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="24" cy="24" r="20" stroke="#C4A882" stroke-width="0.8"/>
-                <circle cx="24" cy="24" r="16" stroke="#C4A882" stroke-width="0.4" stroke-dasharray="2 3"/>
-                <path d="M24 16 C24 16 28 20 24 24 C20 20 24 16 24 16Z" fill="#C4A882" opacity="0.6"/>
-                <path d="M16 24 C16 24 20 20 24 24 C20 28 16 24 16 24Z" fill="#C4A882" opacity="0.4"/>
-                <path d="M32 24 C32 24 28 28 24 24 C28 20 32 24 32 24Z" fill="#C4A882" opacity="0.4"/>
-                <path d="M24 32 C24 32 20 28 24 24 C28 28 24 32 24 32Z" fill="#C4A882" opacity="0.6"/>
-                <circle cx="24" cy="24" r="2" fill="#C4A882"/>
-            </svg>
-        </div>
-
+    <div class="final-message" id="final-message">
+        <div class="final-rule"></div>
+        <p class="final-text">No sé si te das cuenta de lo bien que le sienta al mundo<br>que tú estés despierta en él.</p>
+        <div class="final-sign">Con mucho cariño ♡</div>
+        <button class="btn-replay" onclick="replayVideo()">Ver el vídeo otra vez</button>
     </div>
 
 </div>
 
-<audio id="bg-audio" src="zetak-itzulera.mp3" loop></audio>
-
 <script>
-    /* ─── FECHA ─── */
-    const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-    const now = new Date();
-    document.getElementById('letter-date').textContent =
-        `${now.getDate()} de ${months[now.getMonth()]}, ${now.getFullYear()}`;
+/* ════════════════════════════════════════════
+   ★  EDITA AQUÍ TUS FOTOS Y FRASES  ★
+   
+   src: nombre del archivo (pon las fotos en
+        la misma carpeta que index.html)
+   caption: la frase que aparece debajo
+════════════════════════════════════════════ */
+const PHOTOS = [
+    { src: 'foto1.jpg', caption: 'Aquí me di cuenta de que eres especial' },
+    { src: 'foto2.jpg', caption: 'Esta sonrisa tuya, pa guardarla' },
+    { src: 'foto3.jpg', caption: 'El mejor plan que tuvimos' },
+    { src: 'foto4.jpg', caption: 'Mírate. Así de bien se te ve' },
+    { src: 'foto5.jpg', caption: 'No hace falta filtro cuando eres tú' },
+    { src: 'foto6.jpg', caption: 'Este momento no me lo olvido' },
+    { src: 'foto7.jpg', caption: 'Eres demasiado bonita, en serio' },
+];
 
-    /* ─── AUDIO ─── */
-    const audio = document.getElementById('bg-audio');
-    const dot   = document.getElementById('audio-dot');
-    const btn   = document.getElementById('audio-toggle');
-    let   audioPlaying = false;
+/* Inclinación alterna suave para dar vida */
+const TILTS = [-1.5, 1.2, -0.8, 1.8, -1.2, 0.9, -1.6];
 
-    function toggleAudio() {
-        if (audio.paused) {
-            audio.play().then(() => {
-                audioPlaying = true;
-                dot.classList.remove('paused');
-                btn.textContent = 'Pausar';
-            }).catch(() => {});
-        } else {
-            audio.pause();
-            audioPlaying = false;
-            dot.classList.add('paused');
-            btn.textContent = 'Play';
-        }
-    }
+/* ════════════════════════════════════════════ */
 
-    /* ─── TRANSICIÓN INTRO → CARTA ─── */
-    function startExperience() {
-        const intro  = document.getElementById('screen-intro');
-        const letter = document.getElementById('screen-letter');
+const video   = document.getElementById('hero-video');
+const skipBtn = document.getElementById('btn-skip');
 
-        audio.play().then(() => {
-            audioPlaying = true;
-        }).catch(() => {});
+function startVideo() {
+    document.getElementById('call-ui').style.opacity = '0';
+    document.getElementById('call-ui').style.transform = 'scale(0.95)';
 
-        intro.style.opacity = '0';
-        intro.style.transform = 'translateY(-10px)';
+    setTimeout(() => {
+        document.getElementById('call-ui').style.display = 'none';
+        video.muted = false;
+        video.play().catch(() => {
+            /* Si el autoplay con sonido falla, lo dejamos muted */
+            video.muted = true;
+            video.play();
+        });
+        video.classList.add('visible');
 
         setTimeout(() => {
-            intro.style.display = 'none';
-            letter.style.display = 'block';
-            window.scrollTo(0, 0);
-            setTimeout(() => {
-                letter.style.opacity = '1';
-                setTimeout(typewriteLetter, 600);
-            }, 50);
-        }, 900);
+            skipBtn.style.display = 'block';
+        }, 1500);
+    }, 400);
+
+    video.addEventListener('ended', goToGallery, { once: true });
+}
+
+function goToGallery() {
+    const callScreen    = document.getElementById('screen-call');
+    const galleryScreen = document.getElementById('screen-gallery');
+
+    callScreen.classList.add('hide');
+
+    setTimeout(() => {
+        callScreen.style.display = 'none';
+        galleryScreen.style.display = 'block';
+        window.scrollTo(0, 0);
+
+        setTimeout(() => {
+            galleryScreen.classList.add('visible');
+            buildFilmStrip();
+            revealFrames();
+        }, 80);
+    }, 800);
+}
+
+function buildFilmStrip() {
+    const strip = document.getElementById('film-strip');
+    strip.innerHTML = '';
+
+    PHOTOS.forEach((photo, i) => {
+        const tilt = TILTS[i % TILTS.length];
+
+        const frame = document.createElement('div');
+        frame.className = 'film-frame';
+        frame.style.setProperty('--tilt', tilt + 'deg');
+
+        /* Número de fotograma estilo carrete */
+        const num = document.createElement('div');
+        num.className = 'frame-number';
+        num.textContent = String(i + 1).padStart(2, '0') + 'A';
+
+        /* Perforaciones arriba */
+        frame.appendChild(num);
+        frame.appendChild(makePerfs());
+
+        /* Polaroid */
+        const polaroid = document.createElement('div');
+        polaroid.className = 'polaroid';
+
+        const img = document.createElement('img');
+        img.className = 'polaroid-photo';
+        img.src = photo.src;
+        img.alt = photo.caption;
+        img.onerror = function() {
+            /* Si la foto no carga, muestra un placeholder bonito */
+            this.style.display = 'none';
+            const ph = document.createElement('div');
+            ph.className = 'photo-placeholder';
+            ph.textContent = ['🌸','✨','💛','🌿','☀️','🌙','💫'][i % 7];
+            polaroid.insertBefore(ph, this);
+        };
+
+        const caption = document.createElement('div');
+        caption.className = 'polaroid-caption';
+        caption.textContent = photo.caption;
+
+        polaroid.appendChild(img);
+        polaroid.appendChild(caption);
+        frame.appendChild(polaroid);
+
+        /* Perforaciones abajo */
+        frame.appendChild(makePerfs(true));
+
+        strip.appendChild(frame);
+    });
+}
+
+function makePerfs(bottom = false) {
+    const row = document.createElement('div');
+    row.className = 'film-perfs' + (bottom ? ' bottom' : '');
+    for (let i = 0; i < 6; i++) {
+        const p = document.createElement('div');
+        p.className = 'perf';
+        row.appendChild(p);
     }
+    return row;
+}
 
-    /* ─── EFECTO ESCRITURA A MÁQUINA ─── */
-    const letterText = `Quería escribirte esto porque sé que últimamente la mente va muy deprisa y el ruido de dentro se hace grande.
+function revealFrames() {
+    const frames = document.querySelectorAll('.film-frame');
+    frames.forEach((frame, i) => {
+        setTimeout(() => {
+            frame.classList.add('revealed');
 
-Pero mírate. Eres una persona increíble — con un corazón enorme, una sensibilidad preciosa y una luz que no siempre ves tú misma, aunque los demás sí la vemos.
-
-No tienes que poder con todo hoy. No tienes que ser perfecta, ni fuerte, ni tenerlo todo resuelto. Hoy solo tienes que ser tú, y eso ya es muchísimo.
-
-La ansiedad miente. Te dice que estás en peligro cuando estás a salvo. Respira hondo. Estás aquí, y eso es lo único que importa ahora.
-
-El mundo es mejor contigo en él. Eso lo sé con certeza.`;
-
-    function typewriteLetter() {
-        const el     = document.getElementById('letter-body');
-        const cursor = el.querySelector('.cursor');
-        const chars  = letterText.split('');
-        let   i      = 0;
-
-        const speeds = { ' ': 28, ',': 120, '.': 160, '\n': 200 };
-
-        function type() {
-            if (i >= chars.length) {
-                cursor.remove();
-                document.getElementById('letter-sign').classList.add('visible');
-                setTimeout(showCalm, 800);
-                return;
+            /* Tras la última foto, muestra el mensaje final */
+            if (i === frames.length - 1) {
+                setTimeout(() => {
+                    document.getElementById('final-message').classList.add('visible');
+                }, 700);
             }
-            const ch = chars[i];
-            if (ch === '\n') {
-                el.insertBefore(document.createElement('br'), cursor);
-                if (chars[i+1] === '\n') {
-                    el.insertBefore(document.createElement('br'), cursor);
-                    i++;
-                }
-            } else {
-                const t = document.createTextNode(ch);
-                el.insertBefore(t, cursor);
-            }
-            i++;
-            const delay = speeds[ch] || (Math.random() < 0.05 ? 60 : 22);
-            setTimeout(type, delay);
-        }
+        }, 300 + i * 380);
+    });
+}
 
-        type();
-    }
+function replayVideo() {
+    const callScreen    = document.getElementById('screen-call');
+    const galleryScreen = document.getElementById('screen-gallery');
+    const callUI        = document.getElementById('call-ui');
 
-    function showCalm() {
-        document.getElementById('calm-card').classList.add('visible');
-        setTimeout(() => {
-            document.getElementById('ornament').classList.add('visible');
-        }, 600);
-    }
+    galleryScreen.classList.remove('visible');
 
-    /* ─── FRASES DE CALMA ─── */
-    const phrases = [
-        "Inhala contando hasta 4... sostén 4... exhala 4. Repite. Tu cuerpo sabe cómo calmarse.",
-        "La ansiedad es una ola. No tienes que detenerla, solo dejarla pasar. Ahora mismo estás a salvo.",
-        "No tienes que resolver tu vida entera hoy. Solo el siguiente minuto. Luego el siguiente.",
-        "Eres suficiente. No a pesar de cómo eres, sino exactamente así.",
-        "«Zurekin batera, dena da argiagoa» — contigo, todo es más luminoso.",
-        "Tus días difíciles no te definen. Tu corazón, sí. Y ese es enorme.",
-        "Pon una mano en el pecho. Siente tu propio calor. Estás aquí. Estás viva. Eso es suficiente."
-    ];
-
-    let lastPhrase = -1;
-
-    function changeCalmText() {
-        const el = document.getElementById('calm-text');
-        let idx;
-        do { idx = Math.floor(Math.random() * phrases.length); } while (idx === lastPhrase);
-        lastPhrase = idx;
-        el.style.opacity = '0';
-        setTimeout(() => {
-            el.textContent = phrases[idx];
-            el.style.opacity = '1';
-        }, 350);
-    }
-
-    /* ─── PÉTALOS ─── */
-    const canvas = document.getElementById('petal-canvas');
-    const ctx    = canvas.getContext('2d');
-
-    function resize() {
-        canvas.width  = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    class Petal {
-        constructor(immediate) {
-            this.reset(immediate);
-        }
-        reset(immediate) {
-            this.x     = Math.random() * canvas.width;
-            this.y     = immediate ? Math.random() * canvas.height : -20;
-            this.size  = Math.random() * 5 + 3;
-            this.speedY= Math.random() * 0.5 + 0.2;
-            this.speedX= (Math.random() - 0.5) * 0.4;
-            this.rot   = Math.random() * Math.PI * 2;
-            this.rotSpeed = (Math.random() - 0.5) * 0.015;
-            this.alpha = Math.random() * 0.25 + 0.08;
-            /* colores cálidos: rosa pálido, dorado, blanco */
-            const cols = ['232,213,204', '196,168,130', '255,248,244', '220,200,188'];
-            this.color = cols[Math.floor(Math.random() * cols.length)];
-        }
-        update() {
-            this.y   += this.speedY;
-            this.x   += this.speedX + Math.sin(this.y * 0.015) * 0.3;
-            this.rot += this.rotSpeed;
-            if (this.y > canvas.height + 20) this.reset(false);
-        }
-        draw() {
-            ctx.save();
-            ctx.translate(this.x, this.y);
-            ctx.rotate(this.rot);
-            ctx.globalAlpha = this.alpha;
-            ctx.fillStyle = `rgba(${this.color},1)`;
-            /* pétalo forma oval simple */
-            ctx.beginPath();
-            ctx.ellipse(0, 0, this.size * 0.55, this.size, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-        }
-    }
-
-    const petals = Array.from({ length: 22 }, () => new Petal(true));
-
-    function animatePetals() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        petals.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(animatePetals);
-    }
-    animatePetals();
+    setTimeout(() => {
+        galleryScreen.style.display = 'none';
+        callScreen.style.display    = 'flex';
+        callScreen.classList.remove('hide');
+        callScreen.style.opacity    = '1';
+        callUI.style.display        = 'flex';
+        callUI.style.opacity        = '1';
+        callUI.style.transform      = '';
+        video.classList.remove('visible');
+        video.pause();
+        video.currentTime = 0;
+        skipBtn.style.display = 'none';
+    }, 500);
+}
 </script>
 </body>
 </html>
